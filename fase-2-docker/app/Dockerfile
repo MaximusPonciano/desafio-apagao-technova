@@ -13,14 +13,18 @@
 #   5. Falta EXPOR a porta 3000
 #   6. O CMD está com o nome do arquivo errado ("app.js" em vez de "server.js")
 
-FROM node:latest
+FROM node:20-alpine
+
+USER node
+
+EXPOSE 3000
 
 WORKDIR /app
 
-COPY package-lock.json ./
-
-COPY . .
+COPY package*.json ./
 
 RUN npm install --production
 
-CMD ["node", "app.js"]
+COPY . .
+
+CMD ["node", "server.js"]
