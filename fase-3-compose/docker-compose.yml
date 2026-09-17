@@ -16,14 +16,16 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_HOST=database
+      - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=technova
       - DB_USER=technova
+      - DB_PASSWORD=technova
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
-      - frontend
+      - backend
 
   postgres:
     image: postgres:15-alpine
@@ -35,13 +37,11 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD-SHELL", "pg_ready -U technova"]
+      test: ["CMD-SHELL", "pg_isready -U technova"]
       interval: 5s
       timeout: 3s
       retries: 5
 
 networks:
-  frontend:
-    driver: bridge
   backend:
     driver: bridge
